@@ -7,10 +7,10 @@
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
-         processIsolation="true"
+         processIsolation="false"
          stopOnFailure="false"
-         syntanxCheck="true">
-    <testsuite name="Influx - Unit TestSuite">
-        <directory>./unit</directory>
+         syntaxCheck="true">
+    <testsuite name="Unit Tests">
+        <directory>./</directory>
     </testsuite>
 </phpunit>

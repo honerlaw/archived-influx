@@ -1,5 +1,6 @@
 <?php
 
-define('SOURCE_PATH', realpath(__DIR__ . '/../src/'));
+include_once __DIR__ . '/../src/Server.php';
+include_once __DIR__ . '/../vendor/autoload.php';
 
-include __DIR__ . '/../vendor/autoload.php';
+\Server\Server::init();

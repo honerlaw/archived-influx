@@ -1,23 +1,22 @@
 <?php
 
-namespace Test\Server;
+namespace Test\Unit\Server;
 
 use \PHPUnit\Framework\TestCase;
 
-use \Server\Server;
+use \Server\DI\Injector;
 
 class ServerTest extends TestCase
 {
 
-  public function setUp()
-  {
-    include SOURCE_PATH . '/Server.php';
-  }
-
-  public function testInit()
-  {
-    $server = Server::init();
-    $this->assertInstanceOf(Server::class, $server);
-  }
+    /**
+     * Implicitly test the autoloader as well as
+     * making sure at least the config was loaded in the injector
+     */
+    public function testInit()
+    {
+        $service = Injector::getInstance()->get('config');
+        $this->assertNotNull($service);
+    }
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Unit\Server\DI;
+namespace Test\Server\DI;
 
 use \PHPUnit\Framework\TestCase;
 

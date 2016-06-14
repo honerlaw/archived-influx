@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Unit\Server\Router;
+namespace Test\Server\Router;
 
 use \PHPUnit\Framework\TestCase;
 use \Server\Router\Route;

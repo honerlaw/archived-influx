@@ -57,6 +57,14 @@ class Router
     }
 
     /**
+     * @return array The array of routes
+     */
+    public function getRoutes(): array
+    {
+        return $this->routes;
+    }
+
+    /**
      * Handle the incoming web request and route it appropriately
      * This means creating the RouteContext and passing it through all of the
      * routes and middleware
@@ -69,7 +77,7 @@ class Router
         $ctx = new RouteContext();
 
         // loop through all of the routes
-        foreach($this->routes as $route) {
+        foreach($this->getRoutes() as $route) {
 
             // Check if the request data has the same method as the route
             if($ctx->getRequest()->getMethod() === $route->getMethod()) {

@@ -4,6 +4,7 @@ namespace Server\Router;
 
 use \Server\DI\Injectable;
 use \Server\Http\Request;
+use \Server\Http\Response;
 
 /**
  * Context used for routing, contains data associated with a route
@@ -24,12 +25,18 @@ class RouteContext extends Injectable
     private $request;
 
     /**
+     * @var Response The response object containing response data
+     */
+    private $response;
+
+    /**
      * Initialize the RouteContext
      */
     public function __construct()
     {
         $this->data = [];
         $this->request = new Request();
+        $this->response = new Response();
     }
 
     /**
@@ -38,6 +45,14 @@ class RouteContext extends Injectable
     public function getRequest(): Request
     {
         return $this->request;
+    }
+
+    /**
+     * @return Response
+     */
+    public function getResponse(): Response
+    {
+        return $this->response;
     }
 
     /**
@@ -51,6 +66,7 @@ class RouteContext extends Injectable
     public function set(string $key, $value): self
     {
         $this->data[$key] = $value;
+        return $this;
     }
 
     /**

@@ -10,13 +10,14 @@ class ServerTest extends TestCase
 {
 
     /**
-     * Implicitly test the autoloader as well as
-     * making sure at least the config was loaded in the injector
+     * Implicitly tests autoloader and injector service loading
      */
     public function testInit()
     {
-        $service = Injector::getInstance()->get('config');
-        $this->assertNotNull($service);
+        $config = Injector::getInstance()->get('config');
+        $router = Injector::getInstance()->get('router');
+        $this->assertNotNull($config);
+        $this->assertNotNull($router);
     }
 
 }

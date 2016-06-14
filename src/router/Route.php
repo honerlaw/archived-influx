@@ -37,7 +37,7 @@ final class Route
     public function __construct(string $method, string $uri, RouteHandler $handler)
     {
         $this->method = $method;
-        $this->route = $uri;
+        $this->uri = $uri;
         $this->handler = $handler;
     }
 

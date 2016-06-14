@@ -13,9 +13,6 @@ use \Server\DI\Injector;
 final class Server
 {
 
-    // route a request to an endpoint
-    // so we need a router
-
     /**
      * Only allow init to initialize the class
      */
@@ -28,7 +25,7 @@ final class Server
      */
     public static function init(): self
     {
-        return (new Server())->autoload()->services();
+        return (new Server())->autoload()->services()->routes();
     }
 
     /**
@@ -53,10 +50,32 @@ final class Server
      */
     private function services(): self
     {
+        $injector = Injector::getInstance();
+
         // clear the injector, register the configuration data
-        Injector::getInstance()
-            ->clear()
+        $injector->clear()
             ->set('config', require __DIR__ . '/../resources/config.php');
+
+        // register services that are defined in the config file
+        foreach($injector->get('config')->services as $name => $class) {
+            $injector->set($name, new $class());
+        }
+        return $this;
+    }
+
+    /**
+     * Register all routes for the server from the config file
+     *
+     * @return Server
+     */
+    private function routes(): self
+    {
+        $injector = Injector::getInstance();
+        if($injector->has('config') && $injector->has('router')) {
+            foreach($injector->get('config')->routes as $route) {
+                $injector->get('router')->route($route->method, $route->uri, $route->handler);
+            }
+        }
         return $this;
     }
 

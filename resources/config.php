@@ -3,6 +3,8 @@
 return json_decode(json_encode([
     'title' => 'influx',
     'services' => [
-        '\Server\Router\Router'
-    ]
+        'router' => '\Server\Router\Router'
+    ],
+    'routes' => [
+    ],
 ]));

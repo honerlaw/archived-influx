@@ -1,10 +1,10 @@
 <?php
 
-namespace Test\Server\Router;
+namespace Test\Server\Service\Router;
 
 use \PHPUnit\Framework\TestCase;
 
-use \Server\Router\RouteContext;
+use \Server\Service\Router\RouteContext;
 
 class RouteContextTest extends TestCase
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Server\Router;
+namespace Server\Service\Router;
 
-use \Server\Router\Handler\RouteHandler;
+use \Server\Service\Router\Handler\RouteHandler;
 
 /**
  * Represents a route in the application

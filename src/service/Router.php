@@ -1,10 +1,10 @@
 <?php
 
-namespace Server\Router;
+namespace Server\Service;
 
-use \Server\Router\RouteContext;
-use \Server\Router\Route;
-use \Server\Router\Handler\RouteHandler;
+use \Server\Service\Router\RouteContext;
+use \Server\Service\Router\Route;
+use \Server\Service\Router\Handler\RouteHandler;
 
 /**
  * A simple router that directs a request uris to a handlers.

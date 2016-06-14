@@ -1,9 +1,9 @@
 <?php
 
-namespace Test\Server\Router;
+namespace Test\Server\Service;
 
 use \PHPUnit\Framework\TestCase;
-use \Server\Router\Router;
+use \Server\Service\Router;
 
 class RouterTest extends TestCase
 {
@@ -15,7 +15,7 @@ class RouterTest extends TestCase
 
     public function testRoute()
     {
-        $stub = $this->getMockBuilder('\Server\Router\Handler\RouteHandler')
+        $stub = $this->getMockBuilder('\Server\Service\Router\Handler\RouteHandler')
             ->getMockForAbstractClass();
         $this->router->route('GET', '/foo/bar', $stub);
         $this->assertEquals(count($this->router->getRoutes()), 1);
@@ -28,7 +28,7 @@ class RouterTest extends TestCase
 
     public function testAll()
     {
-        $stub = $this->getMockBuilder('\Server\Router\Handler\RouteHandler')
+        $stub = $this->getMockBuilder('\Server\Service\Router\Handler\RouteHandler')
             ->getMockForAbstractClass();
         $this->router->all('/foo/bar', $stub);
         $this->assertEquals(count($this->router->getRoutes()), 1);

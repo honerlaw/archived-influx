@@ -1,6 +1,6 @@
 <?php
 
-namespace Server\Router;
+namespace Server\Service\Router;
 
 use \Server\DI\Injectable;
 use \Server\Http\Request;

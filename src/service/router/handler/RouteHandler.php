@@ -1,8 +1,8 @@
 <?php
 
-namespace Server\Router\Handler;
+namespace Server\Service\Router\Handler;
 
-use \Server\Router\RouteContext;
+use \Server\Service\Router\RouteContext;
 
 /**
  * Represents a handler that is called for a given route

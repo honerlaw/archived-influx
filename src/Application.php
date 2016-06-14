@@ -4,13 +4,15 @@ namespace Server;
 
 use \Server\DI\Injector;
 
+use \Server\Net\Web\HttpServer;
+
 /**
  * The entry point of the application. Handles loading initial classes / data
  * as well as handling incoming requests
  *
  * @author Derek Honerlaw <honerlawd@gmail.com>
  */
-final class Server
+final class Application
 {
 
     /**
@@ -19,19 +21,19 @@ final class Server
     private function __construct() { }
 
     /**
-     * Static method to initialize the server
+     * Static method to initialize the application
      *
-     * @return Server
+     * @return Application
      */
     public static function init(): self
     {
-        return (new Server())->autoload()->services()->routes();
+        return (new Application())->autoload()->services()->routes();
     }
 
     /**
-     * Register the autoloader for the server
+     * Register the autoloader for the application
      *
-     * @return Server
+     * @return Application
      */
     private function autoload(): self
     {
@@ -44,29 +46,30 @@ final class Server
     }
 
     /**
-     * Register all services for the server (including the configuration)
+     * Register all services for the application (including the configuration)
      *
-     * @return Server
+     * @return Application
      */
     private function services(): self
     {
         $injector = Injector::getInstance();
 
+        $config = require __DIR__ . '/../resources/config.php';
+
         // clear the injector, register the configuration data
-        $injector->clear()
-            ->set('config', require __DIR__ . '/../resources/config.php');
+        $injector->clear()->set('config', $config);
 
         // register services that are defined in the config file
-        foreach($injector->get('config')->services as $name => $class) {
-            $injector->set($name, new $class());
+        foreach($config->services as $name => $class) {
+            $injector->set($name, new $class($config));
         }
         return $this;
     }
 
     /**
-     * Register all routes for the server from the config file
+     * Register all routes for the application from the config file
      *
-     * @return Server
+     * @return Application
      */
     private function routes(): self
     {
@@ -76,6 +79,17 @@ final class Server
                 $injector->get('router')->route($route->method, $route->uri, $route->handler);
             }
         }
+        return $this;
+    }
+
+    /**
+     * Start all servers
+     *
+     * @return Application
+     */
+    private function start(): self
+    {
+        (new HttpServer())->listen()->start();
         return $this;
     }
 

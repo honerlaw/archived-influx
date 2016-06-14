@@ -6,7 +6,7 @@ use \PHPUnit\Framework\TestCase;
 
 use \Server\DI\Injector;
 
-class ServerTest extends TestCase
+class ApplicationTest extends TestCase
 {
 
     /**

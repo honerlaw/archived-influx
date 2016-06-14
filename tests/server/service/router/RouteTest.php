@@ -1,16 +1,16 @@
 <?php
 
-namespace Test\Server\Router;
+namespace Test\Server\Service\Router;
 
 use \PHPUnit\Framework\TestCase;
-use \Server\Router\Route;
+use \Server\Service\Router\Route;
 
 class RouteTest extends TestCase
 {
 
     public function testGetters()
     {
-        $stub = $this->getMockBuilder('\Server\Router\Handler\RouteHandler')->getMockForAbstractClass();
+        $stub = $this->getMockBuilder('\Server\Service\Router\Handler\RouteHandler')->getMockForAbstractClass();
         $route = new Route('GET', '/foo/bar', $stub);
 
         $this->assertSame($route->getHandler(), $stub);

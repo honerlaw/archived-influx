@@ -59,7 +59,8 @@ abstract class Server extends Thread
         // create the socket and listen for incoming connections
         $serverSocket = socket_create_listen($this->port, SOMAXCONN);
         if($serverSocket === false) {
-            Logger::getInstance()->severe(socket_strerror(socket_last_error($serverSocket)));
+            Logger::getInstance()->severe('Failed to start server.');
+            throw new \RuntimeException('Failed to start server.');
         }
 
         // add the server socket to the array of sockets to check for changes

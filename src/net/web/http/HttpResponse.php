@@ -54,7 +54,7 @@ class HttpResponse implements Response
      *
      * @param string $version The http version
      *
-     * @return Response
+     * @return HttpResponse
      */
     public function setVersion(string $version): self
     {
@@ -67,7 +67,7 @@ class HttpResponse implements Response
      *
      * @param int $statusCode The status code
      *
-     * @return Response
+     * @return HttpResponse
      */
     public function setStatusCode(int $statusCode): self
     {
@@ -80,7 +80,7 @@ class HttpResponse implements Response
      *
      * @param string $statusMessage The status message
      *
-     * @return Response
+     * @return HttpResponse
      */
     public function setStatusMessage(string $statusMessage): self
     {
@@ -94,7 +94,7 @@ class HttpResponse implements Response
      * @param string $key The header name
      * @param string $value The header value
      *
-     * @return Response
+     * @return HttpResponse
      */
     public function setHeader(string $key, string $value): self
     {
@@ -107,7 +107,7 @@ class HttpResponse implements Response
      *
      * @param string $content The content body
      *
-     * @return Response
+     * @return HttpResponse
      */
     public function setContent(string $content): self
     {

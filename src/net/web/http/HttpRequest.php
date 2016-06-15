@@ -59,7 +59,7 @@ class HttpRequest implements Request
      *
      * @param string $data The request data
      *
-     * @return Request|null Null if failed to parse data
+     * @return HttpRequest|null Null if failed to parse data
      */
     public static function create(string $data)
     {

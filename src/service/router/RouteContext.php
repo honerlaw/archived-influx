@@ -2,7 +2,6 @@
 
 namespace Server\Service\Router;
 
-use \Server\DI\Injectable;
 use \Server\Http\Request;
 use \Server\Http\Response;
 
@@ -11,7 +10,7 @@ use \Server\Http\Response;
  *
  * @author Derek Honerlaw <honerlawd@gmail.com>
  */
-class RouteContext extends Injectable
+class RouteContext
 {
 
     /**

@@ -2,8 +2,6 @@
 
 namespace Server;
 
-use \Server\DI\Injector;
-
 use \Server\Net\Web\HttpServer;
 
 /**
@@ -16,81 +14,64 @@ final class Application
 {
 
     /**
-     * Only allow init to initialize the class
+     * @var stdClass The config information
      */
-    private function __construct() { }
+    private static $config;
 
     /**
-     * Static method to initialize the application
+     * @var HttpServer The http server
+     */
+    private $httpServer;
+
+    /**
+     * Start all server threads
      *
      * @return Application
      */
-    public static function init(): self
+    public function start(): self
     {
-        return (new Application())->autoload()->services()->routes()->start();
+        if($this->httpServer === null) {
+            $this->httpServer = new HttpServer();
+            $this->httpServer->start();
+        }
+        return $this;
+    }
+
+    /**
+     * Stops all server threads
+     *
+     * @return Application
+     */
+    public function stop(): self
+    {
+        $this->httpServer->stop();
+        $this->httpServer->join();
+        return $this;
     }
 
     /**
      * Register the autoloader for the application
-     *
-     * @return Application
      */
-    private function autoload(): self
+    public static function autoload()
     {
         spl_autoload_register(function($class) {
             if(strtolower(substr($class, 0, 6)) === 'server') {
                 include str_replace('\\', '/', __DIR__ . '/' . substr($class, 7, strlen($class)) . '.php');
             }
         });
-        return $this;
     }
 
     /**
-     * Register all services for the application (including the configuration)
+     * Retreive the config information
      *
-     * @return Application
+     * @return stdClass
      */
-    private function services(): self
+    public static function getConfig(): \stdClass
     {
-        $injector = Injector::getInstance();
-
-        $config = require __DIR__ . '/../resources/config.php';
-
-        // clear the injector, register the configuration data
-        $injector->clear()->set('config', $config);
-
-        // register services that are defined in the config file
-        foreach($config->services as $name => $class) {
-            $injector->set($name, new $class($config));
+        if(static::$config === null) {
+            static::$config = require __DIR__ . '/../resources/config.php';
         }
-        return $this;
-    }
-
-    /**
-     * Register all routes for the application from the config file
-     *
-     * @return Application
-     */
-    private function routes(): self
-    {
-        $injector = Injector::getInstance();
-        if($injector->has('config') && $injector->has('router')) {
-            foreach($injector->get('config')->routes as $route) {
-                $injector->get('router')->route($route->method, $route->uri, $route->handler);
-            }
-        }
-        return $this;
-    }
-
-    /**
-     * Start all servers
-     *
-     * @return Application
-     */
-    private function start(): self
-    {
-        (new HttpServer())->start();
-        return $this;
+        return static::$config;
     }
 
 }

@@ -3,8 +3,7 @@
 namespace Test\Server;
 
 use \PHPUnit\Framework\TestCase;
-
-use \Server\DI\Injector;
+use \Server\Application;
 
 class ApplicationTest extends TestCase
 {
@@ -12,12 +11,10 @@ class ApplicationTest extends TestCase
     /**
      * Implicitly tests autoloader and injector service loading
      */
-    public function testInit()
+    public function testConfig()
     {
-        $config = Injector::getInstance()->get('config');
-        $router = Injector::getInstance()->get('router');
-        $this->assertNotNull($config);
-        $this->assertNotNull($router);
+        // make sure we loaded the config
+        $this->assertInstanceOf('\stdClass', Application::getConfig());
     }
 
 }

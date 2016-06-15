@@ -3,7 +3,7 @@
 namespace Server\Net;
 
 use \Thread;
-use \Server\DI\Injector;
+use \Server\Service\Logger;
 
 /**
  * A very simple server implementation that can be extended to different
@@ -25,6 +25,11 @@ abstract class Server extends Thread
     private $port;
 
     /**
+     * @var boolean Whether the server is running or not
+     */
+    private $running;
+
+    /**
      * Initialize the socket
      *
      * @param int $port The port to bind to
@@ -32,6 +37,7 @@ abstract class Server extends Thread
     public function __construct(int $port)
     {
         $this->port = $port;
+        $this->running = true;
     }
 
     /**
@@ -43,14 +49,13 @@ abstract class Server extends Thread
         // create the socket and listen for incoming connections
         $serverSocket = socket_create_listen($this->port, SOMAXCONN);
         if($serverSocket === false) {
-            Injector::getInstance()->get('logger')
-                ->severe(socket_strerror(socket_last_error($serverSocket)));
+            Logger::getInstance()->severe(socket_strerror(socket_last_error($serverSocket)));
         }
 
         // add the server socket to the array of sockets to check for changes
         $sockets = [$serverSocket];
 
-        while(true) {
+        while($this->running) {
 
             // Copy sockets to readable so socket_select can modify it
             $readable = $sockets;
@@ -89,6 +94,17 @@ abstract class Server extends Thread
         }
 
         socket_close($serverSocket);
+    }
+
+    /**
+     * Stops the server
+     *
+     * @return Server
+     */
+    public function stop(): self
+    {
+        $this->running = false;
+        return $this;
     }
 
     /**

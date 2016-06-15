@@ -11,7 +11,9 @@ class RouteContextTest extends TestCase
 
     public function setUp()
     {
-        $this->ctx = new RouteContext();
+        $requestMock = $this->createMock('\Server\Net\Request');
+        $responseMock = $this->createMock('\Server\Net\Response');
+        $this->ctx = new RouteContext(null, $requestMock, $responseMock);
     }
 
     public function testSetGet()
@@ -23,12 +25,12 @@ class RouteContextTest extends TestCase
 
     public function testGetRequest()
     {
-        $this->assertInstanceOf('\Server\Http\Request', $this->ctx->getRequest());
+        $this->assertInstanceOf('\Server\Net\Request', $this->ctx->getRequest());
     }
 
     public function testGetResponse()
     {
-        $this->assertInstanceOf('\Server\Http\Response', $this->ctx->getResponse());
+        $this->assertInstanceOf('\Server\Net\Response', $this->ctx->getResponse());
     }
 
 }

@@ -2,6 +2,7 @@
 
 namespace Server\Net;
 
+use \Thread;
 use \Server\DI\Injector;
 
 /**
@@ -10,7 +11,7 @@ use \Server\DI\Injector;
  *
  * @author Derek Honerlaw <honerlawd@gmail.com>
  */
-abstract class Server extends \Thread
+abstract class Server extends Thread
 {
 
     /**
@@ -29,16 +30,6 @@ abstract class Server extends \Thread
     private $port;
 
     /**
-     * @var resource The server's socket
-     */
-    private $serverSocket;
-
-    /**
-     * @var array All sockets registered with the server
-     */
-    private $sockets;
-
-    /**
      * Initialize the socket
      *
      * @param string $host The host to bind to
@@ -48,34 +39,6 @@ abstract class Server extends \Thread
     {
         $this->host = $host;
         $this->port = $port;
-        $this->serverSocket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-        $this->sockets = [$this->serverSocket];
-    }
-
-    /**
-     * Close the socket
-     */
-    public function __destruct()
-    {
-        socket_close($this->serverSocket);
-    }
-
-    /**
-     * Bind and start listening
-     *
-     * @return Server
-     */
-    public function listen(): self
-    {
-        if(socket_bind($this->serverSocket, $this->host, $this->port) === false) {
-            Injector::getInstance()->get('logger')
-                ->severe(socket_strerror(socket_last_error($this->serverSocket)));
-        }
-        if(socket_listen($this->serverSocket, SOMAXCONN) === false) {
-            Injector::getInstance()->get('logger')
-                ->severe(socket_strerror(socket_last_error($this->serverSocket)));
-        }
-        return $this;
     }
 
     /**
@@ -83,24 +46,45 @@ abstract class Server extends \Thread
      */
     public function run()
     {
+
+        // create the socket
+        $serverSocket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+
+        // bind the socket
+        if(socket_bind($serverSocket, $this->host, $this->port) === false) {
+            Injector::getInstance()->get('logger')
+                ->severe(socket_strerror(socket_last_error($serverSocket)));
+        }
+
+        // listen for connections
+        if(socket_listen($serverSocket, SOMAXCONN) === false) {
+            Injector::getInstance()->get('logger')
+                ->severe(socket_strerror(socket_last_error($serverSocket)));
+        }
+
+        // add the server socket to the array of sockets to check for changes
+        $sockets = [$serverSocket];
+
         while(true) {
 
-            // Copy the sockets to another array so socket_select can modify it
-            $readable = $this->sockets;
+            // Copy sockets to readable so socket_select can modify it
+            $readable = $sockets;
+            $writable = null;
+            $except = null;
 
             // check if any of the sockets have changed status
-            if(socket_select($readable, $w = null, $e = null, 0) === 0) {
+            if(socket_select($readable, $writable, $except, 0) === 0) {
                 continue;
             }
 
             // check if we need to accept a new socket
-            if(in_array($this->serverSocket, $readable)) {
-                $sock = socket_accept($this->serverSocket);
-                $this->sockets[] = $sock;
+            if(in_array($serverSocket, $readable)) {
+                $sock = socket_accept($serverSocket);
+                $sockets[] = $sock;
                 $this->connected($sock);
 
                 // remove the server socket from the readable array
-                unset($readable[array_search($this->serverSocket, $readable)]);
+                unset($readable[array_search($serverSocket, $readable)]);
             }
 
             // loop through all of the sockets and read their data
@@ -111,12 +95,14 @@ abstract class Server extends \Thread
 
                 // The client disconnected so remove them
                 if($data === false) {
-                    unset($this->sockets[array_search($socket, $this->sockets)]);
+                    unset($sockets[array_search($socket, $sockets)]);
                     continue;
                 }
                 $this->received($socket, trim($data));
             }
         }
+
+        socket_close($serverSocket);
     }
 
     /**

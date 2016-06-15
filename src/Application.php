@@ -27,7 +27,7 @@ final class Application
      */
     public static function init(): self
     {
-        return (new Application())->autoload()->services()->routes();
+        return (new Application())->autoload()->services()->routes()->start();
     }
 
     /**
@@ -39,7 +39,7 @@ final class Application
     {
         spl_autoload_register(function($class) {
             if(strtolower(substr($class, 0, 6)) === 'server') {
-                include __DIR__ . '/' . substr($class, 6, strlen($class)) . '.php';
+                include str_replace('\\', '/', __DIR__ . '/' . substr($class, 7, strlen($class)) . '.php');
             }
         });
         return $this;
@@ -89,7 +89,7 @@ final class Application
      */
     private function start(): self
     {
-        (new HttpServer())->listen()->start();
+        (new HttpServer())->start();
         return $this;
     }
 

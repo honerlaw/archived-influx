@@ -13,7 +13,7 @@ class HttpServer extends Server
 {
 
     const HOST = '127.0.0.1';
-    const PORT = 80;
+    const PORT = 8080;
 
     public function __construct()
     {
@@ -22,12 +22,14 @@ class HttpServer extends Server
 
     public function connected($socket)
     {
-
+        var_dump($socket);
     }
 
     public function received($socket, $data)
     {
-
+        // how do we know we are done reading data though?
+        // seems we always retreive 3 empty strings after we read the header
+        var_dump($socket, $data);
     }
 
 }

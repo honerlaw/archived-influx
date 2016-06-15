@@ -8,7 +8,7 @@ use \Server\Http\Request;
 class RequestTest extends TestCase
 {
 
-    public function setUp()
+    /*public function setUp()
     {
         $this->request = new Request();
     }
@@ -23,6 +23,6 @@ class RequestTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = '/foo/bar';
         $this->assertEquals($this->request->getURI(), '/foo/bar');
-    }
+    }*/
 
 }

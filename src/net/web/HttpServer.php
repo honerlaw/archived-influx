@@ -2,7 +2,11 @@
 
 namespace Server\Net\Web;
 
+use \Server\Application;
 use \Server\Net\Server;
+use \Server\Http\Request;
+use \Server\Http\Response;
+use \Server\Service\Router\RouteContext;
 
 /**
  * Handles incoming http requests
@@ -16,7 +20,7 @@ class HttpServer extends Server
 
     public function __construct()
     {
-        parent::__construct(HttpServer::PORT);
+        parent::__construct(HttpServer::PORT, Application::getConfig()->routes);
     }
 
     public function connected($socket)
@@ -26,7 +30,14 @@ class HttpServer extends Server
 
     public function received($socket, $data)
     {
-        var_dump($socket, $data);
+        $ctx = new RouteContext($socket, Request::create($data));
+        $resp = $this->router->handle($ctx);
+        if($resp instanceof Response) {
+            socket_write($socket, $resp->build());
+        } else {
+            socket_write($socket, (new Response())->setStatusCode(404)->setStatusMessage('Not Found.')->setContent('404 Not Found.')->build());
+        }
+        socket_close($socket);
     }
 
     public function disconnected($socket)

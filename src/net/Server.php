@@ -3,7 +3,9 @@
 namespace Server\Net;
 
 use \Thread;
+use \Server\Application;
 use \Server\Service\Logger;
+use \Server\Service\Router;
 
 /**
  * A very simple server implementation that can be extended to different
@@ -30,14 +32,20 @@ abstract class Server extends Thread
     private $running;
 
     /**
+     * @var Router The router associated with this server
+     */
+    private $router;
+
+    /**
      * Initialize the socket
      *
      * @param int $port The port to bind to
      */
-    public function __construct(int $port)
+    public function __construct(int $port, array $routes)
     {
         $this->port = $port;
         $this->running = true;
+        $this->router = new Router($routes);
     }
 
     /**
@@ -45,6 +53,9 @@ abstract class Server extends Thread
      */
     public function run()
     {
+
+        // Register the autoloader with the new thread context
+        Application::autoload();
 
         // create the socket and listen for incoming connections
         $serverSocket = socket_create_listen($this->port, SOMAXCONN);
@@ -56,6 +67,14 @@ abstract class Server extends Thread
         $sockets = [$serverSocket];
 
         while($this->running) {
+
+            // Check if any of the sockets have closed etc, and remove them
+            foreach($sockets as $key => $socket) {
+                if(get_resource_type($socket) !== 'Socket') {
+                    $this->disconnected($socket);
+                    unset($sockets[$key]);
+                }
+            }
 
             // Copy sockets to readable so socket_select can modify it
             $readable = $sockets;
@@ -105,6 +124,14 @@ abstract class Server extends Thread
     {
         $this->running = false;
         return $this;
+    }
+
+    /**
+     * @return Router
+     */
+    public function getRouter(): Router
+    {
+        return $this->router;
     }
 
     /**

@@ -17,7 +17,7 @@ abstract class RouteHandler
      *
      * @param RouteContext $ctx The route context
      *
-     * @return bool|null If true further routes are ignored
+     * @return Response|null If null continue, if response send out response
      */
     public abstract function handle(RouteContext $ctx);
 

@@ -5,6 +5,7 @@ namespace Server\Service;
 use \Server\Service\Router\RouteContext;
 use \Server\Service\Router\Route;
 use \Server\Service\Router\Handler\RouteHandler;
+use \Server\Http\Response;
 
 /**
  * A simple router that directs a request uris to a handlers.
@@ -23,9 +24,14 @@ class Router
     /**
      * Initialize a new router
      */
-    public function __construct()
+    public function __construct($routes = [])
     {
         $this->routes = [];
+        if(empty($routes) === false) {
+            foreach($routes as $route) {
+                $this->routes[] = new Route($route->method, $route->uri, new $route->class());
+            }
+        }
     }
 
     /**
@@ -69,18 +75,15 @@ class Router
      * This means creating the RouteContext and passing it through all of the
      * routes and middleware
      *
-     * @return void
+     * @return Response|null
      */
-    public function handle()
+    public function handle(RouteContext $ctx)
     {
-        // create the route context (initializing any request data)
-        $ctx = new RouteContext();
-
         // loop through all of the routes
         foreach($this->getRoutes() as $route) {
 
             // Check if the request data has the same method as the route
-            if($ctx->getRequest()->getMethod() === $route->getMethod()) {
+            if($route->getMethod() === '*' || $ctx->getRequest()->getMethod() === $route->getMethod()) {
 
                 // generate the pattern string to be used for preg match
                 $pattern = '/^' . str_replace('/', '\/', $route->getURI()) . '$/';
@@ -92,12 +95,14 @@ class Router
                     // and call the handler
                     array_shift($params);
                     $ctx->getRequest()->setParams($params);
-                    if($handler->handle($ctx) === true) {
-                        break;
+                    $resp = $route->getHandler()->handle($ctx);
+                    if($resp instanceof Response) {
+                        return $resp;
                     }
                 }
             }
         }
+        return null;
     }
 
 }

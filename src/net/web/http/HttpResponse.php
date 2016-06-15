@@ -116,6 +116,14 @@ class HttpResponse implements Response
     }
 
     /**
+     * @return string The content body
+     */
+    public function getContent(): string
+    {
+        return $this->content;
+    }
+
+    /**
      * Build the response object into a string
      *
      * @return string
@@ -127,9 +135,6 @@ class HttpResponse implements Response
         $response .= "Connection: close\n";
         foreach($this->headers as $key => $value) {
             $response .= "$key: $value\n";
-        }
-        if(!array_key_exists('Content-Type', $this->headers)) {
-            $response .= "Content-Type: text/html";
         }
         $response .= "Content-Length: " . (strlen($this->content)) . "\n\n\n";
         return $response . $this->content;

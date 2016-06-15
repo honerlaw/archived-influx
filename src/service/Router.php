@@ -28,7 +28,7 @@ class Router
         $this->routes = [];
         if(empty($routes) === false) {
             foreach($routes as $route) {
-                $this->routes[] = new Route($route->method, $route->uri, new $route->class());
+                $this->routes[] = new Route($route->method, $route->uri, new $route->class(), isset($route->view) ? $route->view : null);
             }
         }
     }
@@ -89,6 +89,9 @@ class Router
 
                 // check if the route's pattern matches the request uri
                 if(preg_match($pattern, $ctx->getRequest()->getURI(), $params)) {
+
+                    // set the current route that is being handled
+                    $ctx->setRoute($route);
 
                     // if it does then we set the params generated from preg_match
                     // and call the handler

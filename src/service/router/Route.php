@@ -28,17 +28,24 @@ final class Route
     private $handler;
 
     /**
+     * @var string The view's file name relative to the views directory
+     */
+    private $view;
+
+    /**
      * Initialize the route
      *
      * @param string $method The route method
      * @param string $uri The route's uri
      * @param RouteHandler $handle The route handler
+     * @param string $view The route's view (optional)
      */
-    public function __construct(string $method, string $uri, RouteHandler $handler)
+    public function __construct(string $method, string $uri, RouteHandler $handler, $view = null)
     {
         $this->method = $method;
         $this->uri = $uri;
         $this->handler = $handler;
+        $this->view = $view;
     }
 
     /**
@@ -63,6 +70,14 @@ final class Route
     public function getHandler(): RouteHandler
     {
         return $this->handler;
+    }
+
+    /**
+     * @return string|null The route's view (if it has one)
+     */
+    public function getView()
+    {
+        return $this->view;
     }
 
 }

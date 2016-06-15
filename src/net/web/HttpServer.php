@@ -16,7 +16,7 @@ use \Server\Service\Router\RouteContext;
 class HttpServer extends Server
 {
 
-    const PORT = 8080;
+    const PORT = 8081;
 
     public function __construct()
     {
@@ -32,10 +32,12 @@ class HttpServer extends Server
     public function received($socket, $data)
     {
         // generate a new route context with the correct request payload
-
         $request = HttpRequest::create($data);
 
+        // if the request was successfully parsed
         if($request !== null) {
+
+            // generate the route context
             $ctx = new RouteContext($socket, $request, new HttpResponse());
 
             // handle the route context
@@ -43,6 +45,17 @@ class HttpServer extends Server
 
             // if the handlers returned a response send it out
             if($resp instanceof HttpResponse) {
+
+                // if there is no content associated with the response
+                if(strlen($resp->getContent()) === 0) {
+
+                    // but there is a view associated with it, so set it
+                    // as the content body if it renders
+                    $data = $ctx->getView()->render();
+                    if($data !== null) {
+                        $resp->setHeader('Content-Type', 'text/html')->setContent($data);
+                    }
+                }
                 socket_write($socket, $resp->build());
             } else {
                 // otherwise send out a 404 not found

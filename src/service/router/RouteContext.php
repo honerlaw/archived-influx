@@ -4,6 +4,7 @@ namespace Server\Service\Router;
 
 use \Server\Net\Request;
 use \Server\Net\Response;
+use \Server\Service\View;
 
 /**
  * Context used for routing, contains data associated with a route
@@ -34,6 +35,16 @@ class RouteContext
     private $response;
 
     /**
+     * @var View The view object to render views
+     */
+    private $view;
+
+    /**
+     * @var Route The current route that is being handled
+     */
+    private $route;
+
+    /**
      * Initialize the RouteContext
      */
     public function __construct($socket, Request $request, Response $response)
@@ -42,6 +53,7 @@ class RouteContext
         $this->socket = $socket;
         $this->request = $request;
         $this->response = $response;
+        $this->view = new View($this);
     }
 
     /**
@@ -66,6 +78,37 @@ class RouteContext
     public function getResponse(): Response
     {
         return $this->response;
+    }
+
+    /**
+     * @return View
+     */
+    public function getView(): View
+    {
+        return $this->view;
+    }
+
+    /**
+     * Set the current route
+     *
+     * @param Route $route The current route
+     *
+     * @return RouteContext
+     */
+    public function setRoute(Route $route): self
+    {
+        $this->route = $route;
+        return $this;
+    }
+
+    /**
+     * Get the current route
+     *
+     * @return Route|null
+     */
+    public function getRoute()
+    {
+        return $this->route;
     }
 
     /**

@@ -54,7 +54,7 @@ class StaticHandler extends RouteHandler
         return $ctx->getResponse()
             ->setStatusCode(404)
             ->setStatusMessage('Not Found.')
-            ->setContent('404 Not Found');
+            ->setContent('404 Not Found.');
     }
 
 }

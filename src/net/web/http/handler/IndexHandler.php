@@ -10,7 +10,7 @@ class IndexHandler extends RouteHandler
 
     public function handle(RouteContext $ctx)
     {
-        return $ctx->getResponse()->setContent('Hello World!');
+        return $ctx->getResponse();
     }
 
 }

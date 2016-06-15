@@ -53,7 +53,6 @@ abstract class Server extends Thread
      */
     public function run()
     {
-
         // Register the autoloader with the new thread context
         Application::autoload();
 
@@ -70,7 +69,7 @@ abstract class Server extends Thread
 
             // Check if any of the sockets have closed etc, and remove them
             foreach($sockets as $key => $socket) {
-                if(get_resource_type($socket) !== 'Socket') {
+                if(!is_resource($socket) || get_resource_type($socket) !== 'Socket') {
                     $this->disconnected($socket);
                     unset($sockets[$key]);
                 }
@@ -89,8 +88,10 @@ abstract class Server extends Thread
             // check if we need to accept a new socket
             if(in_array($serverSocket, $readable)) {
                 $sock = socket_accept($serverSocket);
-                $sockets[] = $sock;
-                $this->connected($sock);
+                if($sock !== false) {
+                    $sockets[] = $sock;
+                    $this->connected($sock);
+                }
 
                 // remove the server socket from the readable array
                 unset($readable[array_search($serverSocket, $readable)]);

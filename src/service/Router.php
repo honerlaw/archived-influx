@@ -5,7 +5,6 @@ namespace Server\Service;
 use \Server\Service\Router\RouteContext;
 use \Server\Service\Router\Route;
 use \Server\Service\Router\Handler\RouteHandler;
-use \Server\Http\Response;
 
 /**
  * A simple router that directs a request uris to a handlers.
@@ -96,7 +95,7 @@ class Router
                     array_shift($params);
                     $ctx->getRequest()->setParams($params);
                     $resp = $route->getHandler()->handle($ctx);
-                    if($resp instanceof Response) {
+                    if($resp !== null) {
                         return $resp;
                     }
                 }

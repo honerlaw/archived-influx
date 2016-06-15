@@ -2,6 +2,8 @@
 
 namespace Server\Http;
 
+use \Server\Service\Logger;
+
 /**
  * Stores / reads all of the data associated with a request
  *
@@ -56,12 +58,20 @@ class Request
      *
      * @param string $data The request data
      *
-     * @return Request
+     * @return Request|null Null if failed to parse data
      */
-    public static function create(string $data): self
+    public static function create(string $data)
     {
         $pieces = explode("\n", $data);
+        if(count($pieces) === 0) {
+            Logger::getInstance()->info('Invalid HTTP request.');
+            return null;
+        }
         $info = explode(' ', $pieces[0]);
+        if(count($info) !== 3) {
+            Logger::getInstance()->info('Invalid HTTP request.');
+            return null;
+        }
         unset($pieces[0]);
         $headers = [];
         foreach($pieces as $piece) {

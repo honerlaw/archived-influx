@@ -12,12 +12,11 @@ use \Server\Net\Server;
 class HttpServer extends Server
 {
 
-    const HOST = '127.0.0.1';
     const PORT = 8080;
 
     public function __construct()
     {
-        parent::__construct(HttpServer::HOST, HttpServer::PORT);
+        parent::__construct(HttpServer::PORT);
     }
 
     public function connected($socket)

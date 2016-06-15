@@ -20,11 +20,6 @@ abstract class Server extends Thread
     const READ_LENGTH = 2048;
 
     /**
-     * @var string The host to bind to
-     */
-    private $host;
-
-    /**
      * @var int The port to bind to
      */
     private $port;
@@ -32,12 +27,10 @@ abstract class Server extends Thread
     /**
      * Initialize the socket
      *
-     * @param string $host The host to bind to
      * @param int $port The port to bind to
      */
-    public function __construct(string $host, int $port)
+    public function __construct(int $port)
     {
-        $this->host = $host;
         $this->port = $port;
     }
 
@@ -47,17 +40,9 @@ abstract class Server extends Thread
     public function run()
     {
 
-        // create the socket
-        $serverSocket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-
-        // bind the socket
-        if(socket_bind($serverSocket, $this->host, $this->port) === false) {
-            Injector::getInstance()->get('logger')
-                ->severe(socket_strerror(socket_last_error($serverSocket)));
-        }
-
-        // listen for connections
-        if(socket_listen($serverSocket, SOMAXCONN) === false) {
+        // create the socket and listen for incoming connections
+        $serverSocket = socket_create_listen($this->port, SOMAXCONN);
+        if($serverSocket === false) {
             Injector::getInstance()->get('logger')
                 ->severe(socket_strerror(socket_last_error($serverSocket)));
         }

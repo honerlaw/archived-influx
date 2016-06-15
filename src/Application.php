@@ -56,7 +56,7 @@ final class Application
     {
         spl_autoload_register(function($class) {
             if(strtolower(substr($class, 0, 6)) === 'server') {
-                include str_replace('\\', '/', __DIR__ . '/' . substr($class, 7, strlen($class)) . '.php');
+                include str_replace('\\', DIRECTORY_SEPARATOR, __DIR__ . '/' . substr($class, 7, strlen($class)) . '.php');
             }
         });
     }

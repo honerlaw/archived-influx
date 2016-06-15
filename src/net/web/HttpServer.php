@@ -27,8 +27,6 @@ class HttpServer extends Server
 
     public function received($socket, $data)
     {
-        // how do we know we are done reading data though?
-        // seems we always retreive 3 empty strings after we read the header
         var_dump($socket, $data);
     }
 

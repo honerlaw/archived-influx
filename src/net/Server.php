@@ -17,7 +17,7 @@ abstract class Server extends Thread
     /**
      * @var int The number of bytes to read from the socket
      */
-    const READ_LENGTH = 1024;
+    const READ_LENGTH = 2048;
 
     /**
      * @var string The host to bind to
@@ -90,8 +90,8 @@ abstract class Server extends Thread
             // loop through all of the sockets and read their data
             foreach($readable as $socket) {
 
-                // Read the incoming data
-                $data = @socket_read($socket, Server::READ_LENGTH, PHP_NORMAL_READ);
+                // Read the incoming data and ignore exceptions thrown by socket_read
+                $data = @socket_read($socket, Server::READ_LENGTH, PHP_BINARY_READ);
 
                 // The client disconnected so remove them
                 if($data === false) {

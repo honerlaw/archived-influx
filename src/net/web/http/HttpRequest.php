@@ -1,7 +1,8 @@
 <?php
 
-namespace Server\Http;
+namespace Server\Net\Web\Http;
 
+use \Server\Net\Request;
 use \Server\Service\Logger;
 
 /**
@@ -9,7 +10,7 @@ use \Server\Service\Logger;
  *
  * @author Derek Honerlaw <honerlawd@gmail.com>
  */
-class Request
+class HttpRequest implements Request
 {
 
     /**
@@ -78,7 +79,7 @@ class Request
             $temp = explode(': ', $piece);
             $headers[$temp[0]] = $temp[1];
         }
-        return new Request($info[0], $info[1], $info[2], $headers);
+        return new HttpRequest($info[0], $info[1], $info[2], $headers);
     }
 
     /**

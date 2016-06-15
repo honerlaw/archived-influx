@@ -2,8 +2,8 @@
 
 namespace Server\Service\Router;
 
-use \Server\Http\Request;
-use \Server\Http\Response;
+use \Server\Net\Request;
+use \Server\Net\Response;
 
 /**
  * Context used for routing, contains data associated with a route
@@ -36,12 +36,12 @@ class RouteContext
     /**
      * Initialize the RouteContext
      */
-    public function __construct($socket, Request $request)
+    public function __construct($socket, Request $request, Response $response)
     {
         $this->data = [];
         $this->socket = $socket;
         $this->request = $request;
-        $this->response = new Response();
+        $this->response = $response;
     }
 
     /**

@@ -7,7 +7,7 @@ return json_decode(json_encode([
         [
             'method' => 'GET',
             'uri' => '/',
-            'class' => '\Server\Net\Web\Http\IndexHandler'
+            'class' => '\Server\Net\Web\Http\Handler\IndexHandler'
         ]
     ],
 ]));

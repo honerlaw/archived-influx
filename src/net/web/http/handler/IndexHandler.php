@@ -1,6 +1,6 @@
 <?php
 
-namespace Server\Net\Web\Http;
+namespace Server\Net\Web\Http\Handler;
 
 use \Server\Service\Router\RouteContext;
 use \Server\Service\Router\Handler\RouteHandler;

@@ -4,8 +4,8 @@ namespace Server\Net\Web;
 
 use \Server\Application;
 use \Server\Net\Server;
-use \Server\Http\Request;
-use \Server\Http\Response;
+use \Server\Net\Web\Http\HttpRequest;
+use \Server\Net\Web\Http\HttpResponse;
 use \Server\Service\Router\RouteContext;
 
 /**
@@ -33,20 +33,20 @@ class HttpServer extends Server
     {
         // generate a new route context with the correct request payload
 
-        $request = Request::create($data);
+        $request = HttpRequest::create($data);
 
         if($request !== null) {
-            $ctx = new RouteContext($socket, $request);
+            $ctx = new RouteContext($socket, $request, new HttpResponse());
 
             // handle the route context
             $resp = $this->router->handle($ctx);
 
             // if the handlers returned a response send it out
-            if($resp instanceof Response) {
+            if($resp instanceof HttpResponse) {
                 socket_write($socket, $resp->build());
             } else {
                 // otherwise send out a 404 not found
-                socket_write($socket, (new Response())
+                socket_write($socket, (new HttpResponse())
                     ->setStatusCode(404)
                     ->setStatusMessage('Not Found.')
                     ->setContent('404 Not Found.')
@@ -55,7 +55,7 @@ class HttpServer extends Server
         } else {
 
             // failed to parse request so send out 400 error
-            socket_write($socket, (new Response())
+            socket_write($socket, (new HttpResponse())
                 ->setStatusCode(400)
                 ->setStatusMessage('Bad Request.')
                 ->setContent('400 Bad Request.')

@@ -1,13 +1,15 @@
 <?php
 
-namespace Server\Http;
+namespace Server\Net\Web\Http;
+
+use \Server\Net\Response;
 
 /**
  * Handles setting and building the response for http requests
  *
  * @author Derek Honerlaw <honerlawd@gmail.com>
  */
-class Response
+class HttpResponse implements Response
 {
 
     /**

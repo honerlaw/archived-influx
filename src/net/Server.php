@@ -95,6 +95,7 @@ abstract class Server extends Thread
 
                 // The client disconnected so remove them
                 if($data === false) {
+                    $this->disconnected($socket);
                     unset($sockets[array_search($socket, $sockets)]);
                     continue;
                 }
@@ -108,16 +109,24 @@ abstract class Server extends Thread
     /**
      * Called when a new socket is connected
      *
-     * @var resource $socket The newly accepted socket
+     * @param resource $socket The newly accepted socket
      */
     public abstract function connected($socket);
 
     /**
      * Called when data is read from a socket
      *
-     * @var resource $socket The socket that was read from
-     * @var mixed $data The data that was read from the socket
+     * @param resource $socket The socket that was read from
+     * @param mixed $data The data that was read from the socket
      */
     public abstract function received($socket, $data);
+
+
+    /**
+     * Called when a socket is disconnected
+     *
+     * @param resource $socket The socket that disconnected
+     */
+    public abstract function disconnected($socket);
 
 }

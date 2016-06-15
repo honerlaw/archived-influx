@@ -30,4 +30,9 @@ class HttpServer extends Server
         var_dump($socket, $data);
     }
 
+    public function disconnected($socket)
+    {
+
+    }
+
 }

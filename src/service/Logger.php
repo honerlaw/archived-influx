@@ -32,6 +32,11 @@ class Logger
     private $file;
 
     /**
+     * @var array An array of formatted messages that need to be written
+     */
+    private $backlog;
+
+    /**
      * Class constructor, opens the file
      *
      * @param \stdClass $config The config data
@@ -39,6 +44,7 @@ class Logger
     private function __construct()
     {
         $this->logFilePath = Application::getConfig()->logFilePath;
+        $this->backlog = [];
     }
 
     /**
@@ -118,22 +124,36 @@ class Logger
      * Write a given message to the log file
      *
      * @param string $message The message to write
-     *
-     * @throws RuntimeException
      */
     private function write(string $message)
     {
-        if(file_exists($this->logFilePath) === false) {
+        // Open the file if it is not opened or not found
+        if(!file_exists($this->logFilePath) || !is_resource($this->file)) {
             $this->file = fopen($this->logFilePath, 'a');
         }
-        if($this->file === false) {
-            throw new \RuntimeException('The log file could not be written to.');
+
+        // if for some reason it can't be written, store it
+        if($this->file === false || $this->file === null) {
+            $this->backlog[] = $message;
         } else {
+
+            // if failure to write, store the message to write at a later date
             if(fwrite($this->file, $message) === false) {
-                throw new \RuntimeException('The log file could not be written to.');
+                $this->backlog[] = $message;
             } else {
-                fflush($this->file);
+
+                // the last write worked so try and write the backlog as well
+                for($i = 0; $i < count($this->backlog); ++$i) {
+                    if(fwrite($this->file, $this->backlog[$i]) !== false) {
+
+                        // remove the message from the backlog if it was written
+                        unset($this->backlog[$i]);
+                    }
+                }
             }
+
+            // flush all of the changes to the file
+            fflush($this->file);
         }
     }
 

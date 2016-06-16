@@ -66,7 +66,7 @@ abstract class Server extends Thread
         // add the server socket to the array of sockets to check for changes
         $sockets = [$serverSocket];
 
-        while($this->running) {
+        while($this->isRunning()) {
 
             // Check if any of the sockets have closed etc, and remove them
             foreach($sockets as $key => $socket) {
@@ -114,7 +114,35 @@ abstract class Server extends Thread
             }
         }
 
-        socket_close($serverSocket);
+        $this->close($serverSocket);
+    }
+
+    /**
+     * Write data to a given socket
+     *
+     * @param resource $socket The socket to write to
+     * @param string $data The data to write out
+     *
+     * @return Server
+     */
+    public function write($socket, string $data): self
+    {
+        socket_write($socket, $data);
+        return $this;
+    }
+
+    /**
+     * Shutdown and close a socket
+     *
+     * @param resource $socket The socket to close
+     *
+     * @return Server
+     */
+    public function close($socket): self
+    {
+        @socket_shutdown($socket);
+        socket_close($socket);
+        return $this;
     }
 
     /**
@@ -126,6 +154,14 @@ abstract class Server extends Thread
     {
         $this->running = false;
         return $this;
+    }
+
+    /**
+     * @return bool Whether the server is running or not
+     */
+    public function isRunning(): bool
+    {
+        return $this->running;
     }
 
     /**

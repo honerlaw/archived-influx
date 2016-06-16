@@ -52,7 +52,7 @@ class Logger
      */
     public function __destruct()
     {
-        if($this->file !== false) {
+        if(is_resource($this->file)) {
             fclose($this->file);
         }
     }

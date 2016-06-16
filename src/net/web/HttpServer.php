@@ -16,7 +16,7 @@ use \Server\Service\Router\RouteContext;
 class HttpServer extends Server
 {
 
-    const PORT = 8081;
+    const PORT = 8080;
 
     public function __construct()
     {
@@ -56,10 +56,10 @@ class HttpServer extends Server
                         $resp->setHeader('Content-Type', 'text/html')->setContent($data);
                     }
                 }
-                socket_write($socket, $resp->build());
+                $this->write($socket, $resp->build());
             } else {
                 // otherwise send out a 404 not found
-                socket_write($socket, (new HttpResponse())
+                $this->write($socket, (new HttpResponse())
                     ->setStatusCode(404)
                     ->setStatusMessage('Not Found.')
                     ->setContent('404 Not Found.')
@@ -68,7 +68,7 @@ class HttpServer extends Server
         } else {
 
             // failed to parse request so send out 400 error
-            socket_write($socket, (new HttpResponse())
+            $this->write($socket, (new HttpResponse())
                 ->setStatusCode(400)
                 ->setStatusMessage('Bad Request.')
                 ->setContent('400 Bad Request.')
@@ -76,8 +76,7 @@ class HttpServer extends Server
         }
 
         // shutdown and close the socket after the response is written
-        @socket_shutdown($socket);
-        socket_close($socket);
+        $this->close($socket);
     }
 
     /**

@@ -65,20 +65,21 @@ class HttpRequest implements Request
     {
         $pieces = explode("\n", $data);
         if(count($pieces) === 0) {
-            Logger::getInstance()->info('Invalid HTTP request.');
             return null;
         }
         $info = explode(' ', $pieces[0]);
         if(count($info) !== 3) {
-            Logger::getInstance()->info('Invalid HTTP request.');
             return null;
         }
         unset($pieces[0]);
         $headers = [];
         foreach($pieces as $piece) {
-            $temp = explode(': ', $piece);
-            $headers[$temp[0]] = $temp[1];
+            $temp = explode(': ', $piece, 2);
+            if(count($temp) === 2) {
+                $headers[$temp[0]] = $temp[1];
+            }
         }
+        // TODO: need to set any get parameters from the uri
         return new HttpRequest($info[0], $info[1], $info[2], $headers);
     }
 
@@ -107,6 +108,16 @@ class HttpRequest implements Request
     }
 
     /**
+     * Retreive all of the request headers
+     *
+     * @return array The array of headers
+     */
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
+
+    /**
      * Get the header information for the given header name
      *
      * @param string $name The header name
@@ -121,23 +132,27 @@ class HttpRequest implements Request
         return null;
     }
 
-    public function setParams($params): self
+    /**
+     * Set the parameters generated from preg_match (uri params)
+     *
+     * @param array $params The params generated from preg_match
+     *
+     * @return HttpRequest
+     */
+    public function setParams(array $params): self
     {
         $this->params = $params;
         return $this;
     }
 
-    public function getParams(): array
+    /**
+     * Get the uri params
+     *
+     * @return array|null
+     */
+    public function getParams()
     {
-        return $params;
-    }
-
-    public function getParam(string $name)
-    {
-        if(array_key_exists($name, $this->params)) {
-            return $this->params[$name];
-        }
-        return null;
+        return $this->params;
     }
 
 }

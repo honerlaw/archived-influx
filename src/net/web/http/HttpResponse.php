@@ -63,6 +63,14 @@ class HttpResponse implements Response
     }
 
     /**
+     * @return string The http response version
+     */
+    public function getVersion(): string
+    {
+        return $this->version;
+    }
+
+    /**
      * Set the status code
      *
      * @param int $statusCode The status code
@@ -73,6 +81,14 @@ class HttpResponse implements Response
     {
         $this->statusCode = $statusCode;
         return $this;
+    }
+
+    /**
+     * @return int The status code
+     */
+    public function getStatusCode(): int
+    {
+        return $this->statusCode;
     }
 
     /**
@@ -89,6 +105,14 @@ class HttpResponse implements Response
     }
 
     /**
+     * @return string The status message
+     */
+    public function getStatusMessage(): string
+    {
+        return $this->statusMessage;
+    }
+
+    /**
      * Set a header value
      *
      * @param string $key The header name
@@ -100,6 +124,14 @@ class HttpResponse implements Response
     {
         $this->headers[$key] = $value;
         return $this;
+    }
+
+    /**
+     * @return array All response headers
+     */
+    public function getHeaders(): array
+    {
+        return $this->headers;
     }
 
     /**

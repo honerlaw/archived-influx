@@ -20,11 +20,6 @@ class RouteContext
     private $data;
 
     /**
-     * @var resource The client socket
-     */
-    private $socket;
-
-    /**
      * @var Request The request object containing request data
      */
     private $request;
@@ -47,21 +42,12 @@ class RouteContext
     /**
      * Initialize the RouteContext
      */
-    public function __construct($socket, Request $request, Response $response)
+    public function __construct(Request $request, Response $response)
     {
         $this->data = [];
-        $this->socket = $socket;
         $this->request = $request;
         $this->response = $response;
         $this->view = new View($this);
-    }
-
-    /**
-     * @return resource The client socket
-     */
-    public function getSocket()
-    {
-        return $this->socket;
     }
 
     /**

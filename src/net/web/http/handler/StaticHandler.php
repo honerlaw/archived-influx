@@ -40,10 +40,10 @@ class StaticHandler extends RouteHandler
         $path = $this->webroot . DIRECTORY_SEPARATOR . $ctx->getRequest()->getURI();
 
         // check if the resource exists
-        if(file_exists($path)) {
+        if(file_exists($path) && is_dir($path) === false) {
 
             // if so get the mime type and content and send it out
-            $contentType = mime_content_type($path);
+            $contentType = (new finfo())->file($path, FILEINFO_MIME_TYPE);
             $content = file_get_contents($path);
             return $ctx->getResponse()
                 ->setHeader('Content-Type', $contentType)

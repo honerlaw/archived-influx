@@ -40,4 +40,9 @@ class LoggerTest extends TestCase
         $this->assertEquals(trim(file_get_contents($this->path)), '[SEVERE]: Foo bar.');
     }
 
+    public function tearDown()
+    {
+        Logger::getInstance()->close();
+    }
+
 }

@@ -13,7 +13,7 @@ class RouteContextTest extends TestCase
     {
         $requestMock = $this->createMock('\Server\Net\Request');
         $responseMock = $this->createMock('\Server\Net\Response');
-        $this->ctx = new RouteContext(null, $requestMock, $responseMock);
+        $this->ctx = new RouteContext($requestMock, $responseMock);
     }
 
     public function testSetGet()

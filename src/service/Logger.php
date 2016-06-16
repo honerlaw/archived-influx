@@ -52,9 +52,7 @@ class Logger
      */
     public function __destruct()
     {
-        if(is_resource($this->file)) {
-            fclose($this->file);
-        }
+        $this->close();
     }
 
     /**
@@ -155,6 +153,20 @@ class Logger
             // flush all of the changes to the file
             fflush($this->file);
         }
+    }
+
+    /**
+     * Forces the file to close
+     *
+     * @return Logger
+     */
+    public function close(): Logger
+    {
+        if(is_resource($this->file)) {
+            fclose($this->file);
+        }
+        $this->file = null;
+        return $this;
     }
 
     /**

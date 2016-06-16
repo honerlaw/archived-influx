@@ -38,7 +38,7 @@ class HttpServer extends Server
         if($request !== null) {
 
             // generate the route context
-            $ctx = new RouteContext($socket, $request, new HttpResponse());
+            $ctx = new RouteContext($request, new HttpResponse());
 
             // handle the route context
             $resp = $this->router->handle($ctx);

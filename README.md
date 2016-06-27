@@ -1,6 +1,8 @@
 # influx
 
-A simple pure PHP 7 web server and web socket server.
+A simple pure PHP 7 web server.
+
+This is no longer being worked on or maintained. The idea was to get minimal experience working with pthreads on windows and linux as well as working with php sockets on both windows and linux using pure php.
 
 ### How to run the server
 1. Make sure you are using the thread safe version of PHP 7+
